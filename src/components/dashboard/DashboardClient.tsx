@@ -219,14 +219,10 @@ export default function DashboardClient({ user, initialProfile, recentDigests }:
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
-        {/* Welcome Section */}
+        {/* Account Section */}
         <section className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Welcome back{user.email ? `, ${user.email.split('@')[0]}` : ''}
-          </h1>
-          <p className="text-gray-400">
-            Manage your watchlist and email preferences
-          </p>
+          <p className="text-gray-400 text-sm mb-1">Signed in as</p>
+          <p className="text-white text-lg font-medium">{user.email}</p>
         </section>
 
         {/* Send Digest Now Card */}
