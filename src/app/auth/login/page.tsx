@@ -29,7 +29,7 @@ export default function LoginPage() {
       setMessage({ type: 'error', text: error.message })
     } else {
       setShowOtpInput(true)
-      setMessage({ type: 'success', text: 'Check your email for the magic link or enter the 8-digit code below.' })
+      setMessage({ type: 'success', text: 'Check your email for the magic link.' })
     }
 
     setLoading(false)
