@@ -29,7 +29,7 @@ export default function LoginPage() {
       setMessage({ type: 'error', text: error.message })
     } else {
       setShowOtpInput(true)
-      setMessage({ type: 'success', text: 'Check your email for the magic link or enter the 6-digit code below.' })
+      setMessage({ type: 'success', text: 'Check your email for the magic link or enter the 8-digit code below.' })
     }
 
     setLoading(false)
@@ -148,19 +148,19 @@ export default function LoginPage() {
 
               <div>
                 <label htmlFor="otp" className="block text-sm font-medium text-gray-300 mb-2">
-                  Enter 6-digit code
+                  Enter 8-digit code
                 </label>
                 <input
                   id="otp"
                   type="text"
                   inputMode="numeric"
                   pattern="[0-9]*"
-                  maxLength={6}
+                  maxLength={8}
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value.replace(/[^0-9]/g, ''))}
-                  placeholder="000000"
+                  placeholder="00000000"
                   required
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-center text-2xl tracking-[0.5em] font-mono"
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-center text-2xl tracking-[0.3em] font-mono"
                 />
               </div>
 
@@ -172,7 +172,7 @@ export default function LoginPage() {
 
               <button
                 type="submit"
-                disabled={loading || otpCode.length !== 6}
+                disabled={loading || otpCode.length !== 8}
                 className="w-full py-3 px-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 {loading ? (
