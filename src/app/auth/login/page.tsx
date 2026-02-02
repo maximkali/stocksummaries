@@ -19,7 +19,7 @@ export default function LoginPage() {
     const supabase = createClient()
 
     const { error } = await supabase.auth.signInWithOtp({
-      email,
+      email: email.trim().toLowerCase(),
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
@@ -42,7 +42,7 @@ export default function LoginPage() {
 
     const supabase = createClient()
     const { error } = await supabase.auth.verifyOtp({
-      email,
+      email: email.trim().toLowerCase(),
       token: otpCode,
       type: 'email'
     })
@@ -61,7 +61,7 @@ export default function LoginPage() {
 
     const supabase = createClient()
     const { error } = await supabase.auth.signInWithOtp({
-      email,
+      email: email.trim().toLowerCase(),
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
