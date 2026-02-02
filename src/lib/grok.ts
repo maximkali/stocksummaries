@@ -70,7 +70,7 @@ Be direct. Be useful. Skip anything that doesn't matter.`
 
   const grok = getGrokClient()
   const response = await grok.chat.completions.create({
-    model: 'grok-4',
+    model: 'grok-4-1-fast-reasoning',
     messages: [
       {
         role: 'system',
