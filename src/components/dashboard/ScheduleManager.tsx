@@ -182,7 +182,7 @@ export default function ScheduleManager({
         <p className="text-gray-500 text-xs mt-2">
           {frequency === 'daily' && 'Receive updates Monday through Friday'}
           {frequency === 'weekly' && 'Pick one day per week'}
-          {frequency === 'custom' && 'Pick multiple days per week'}
+          {frequency === 'custom' && 'Select two or more days per week'}
         </p>
       </div>
 
