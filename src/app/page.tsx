@@ -96,12 +96,12 @@ export default function LandingPage() {
                       <span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full">Bullish</span>
                     </div>
                     <div className="text-right">
-                      <span className="text-white font-bold">$892.50</span>
-                      <span className="block text-green-400 text-sm">+3.2%</span>
+                      <span className="text-white font-bold">$142.65</span>
+                      <span className="block text-green-400 text-sm">+4.7%</span>
                     </div>
                   </div>
                   <p className="text-gray-300 text-sm">
-                    Record data center revenue up 154% YoY. Jensen Huang announced new Blackwell architecture at GTC. Analysts raise targets across the board.
+                    Q4 data center revenue hit $35B, up 93% YoY. Blackwell GPUs now shipping at scale. Morgan Stanley raises PT to $170, citing AI infrastructure demand through 2027.
                   </p>
                 </div>
 
@@ -113,12 +113,12 @@ export default function LandingPage() {
                       <span className="px-2 py-1 bg-gray-500/20 text-gray-400 text-xs font-semibold rounded-full">Neutral</span>
                     </div>
                     <div className="text-right">
-                      <span className="text-white font-bold">$178.25</span>
-                      <span className="block text-red-400 text-sm">-0.8%</span>
+                      <span className="text-white font-bold">$232.40</span>
+                      <span className="block text-red-400 text-sm">-1.2%</span>
                     </div>
                   </div>
                   <p className="text-gray-300 text-sm">
-                    EU DMA compliance deadline approaching. Vision Pro sales steady but below expectations. Services segment continues strong growth.
+                    iPhone 16 sales in China down 11% per Counterpoint. Services revenue up 18% to $26B, offsetting hardware weakness. CFO hints at AI features coming to Siri in Q2.
                   </p>
                 </div>
 
