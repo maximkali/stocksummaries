@@ -141,8 +141,8 @@ export default function LoginPage() {
             // OTP Code Entry Form
             <form onSubmit={handleVerifyOtp} className="space-y-5">
               <div className="text-center">
-                <p className="text-white font-medium mb-1">Check your email</p>
-                <p className="text-gray-400 text-sm">
+                <p className="text-white font-semibold text-lg mb-1">Check your email</p>
+                <p className="text-gray-300 text-sm">
                   We sent a code to {email}
                 </p>
               </div>
@@ -158,7 +158,7 @@ export default function LoginPage() {
                   onChange={(e) => setOtpCode(e.target.value.replace(/[^0-9]/g, ''))}
                   placeholder="Enter 8-digit code"
                   required
-                  className="w-full px-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-center text-xl tracking-widest font-mono"
+                  className="w-full px-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-center text-xl tracking-widest font-mono"
                 />
               </div>
 
@@ -192,7 +192,7 @@ export default function LoginPage() {
                 )}
               </button>
 
-              <div className="flex items-center justify-center gap-4 text-sm">
+              <div className="flex items-center justify-center gap-4">
                 <button
                   type="button"
                   onClick={handleResendCode}
@@ -201,12 +201,12 @@ export default function LoginPage() {
                 >
                   Resend code
                 </button>
-                <span className="text-gray-600">•</span>
+                <span className="text-white/50">•</span>
                 <button
                   type="button"
                   onClick={handleBackToEmail}
                   disabled={loading}
-                  className="text-gray-400 hover:text-white transition-colors disabled:opacity-50"
+                  className="text-gray-300 hover:text-white transition-colors disabled:opacity-50"
                 >
                   Change email
                 </button>
