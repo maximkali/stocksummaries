@@ -12,10 +12,8 @@ export async function sendStockDigest(
   stocks: StockResearchResult[]
 ) {
   const resend = getResendClient()
-  // Use Resend's test domain for development, or your verified domain for production
-  const fromAddress = process.env.NODE_ENV === 'production'
-    ? 'Stock Summaries <digest@stocksummaries.app>'
-    : 'Stock Summaries <onboarding@resend.dev>'
+  // Use verified domain for sending emails
+  const fromAddress = 'Stock Summaries <digest@stocksummaries.com>'
 
   const { data, error } = await resend.emails.send({
     from: fromAddress,
