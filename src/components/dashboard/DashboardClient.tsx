@@ -16,8 +16,10 @@ interface DashboardClientProps {
 
 export default function DashboardClient({ user, initialProfile, recentDigests }: DashboardClientProps) {
   const [profile, setProfile] = useState<UserProfile | null>(initialProfile)
-  const [saving, setSaving] = useState(false)
-  const [saveMessage, setSaveMessage] = useState<string | null>(null)
+  const [savingTickers, setSavingTickers] = useState(false)
+  const [tickerSaveMessage, setTickerSaveMessage] = useState<string | null>(null)
+  const [savingSchedule, setSavingSchedule] = useState(false)
+  const [scheduleSaveMessage, setScheduleSaveMessage] = useState<string | null>(null)
   const [sendingDigest, setSendingDigest] = useState(false)
   const [digestMessage, setDigestMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const supabase = createClient()
@@ -41,7 +43,7 @@ export default function DashboardClient({ user, initialProfile, recentDigests }:
       // Create new profile object if none exists
       return { ...defaultProfile, id: user.id, email: user.email || '', tickers: newTickers } as UserProfile
     })
-    await saveProfile({ tickers: newTickers })
+    await saveProfile({ tickers: newTickers }, 'tickers')
   }
 
   const handleScheduleChange = async (updates: {
@@ -58,12 +60,17 @@ export default function DashboardClient({ user, initialProfile, recentDigests }:
       // Create new profile object if none exists
       return { ...defaultProfile, id: user.id, email: user.email || '', ...updates } as UserProfile
     })
-    await saveProfile(updates)
+    await saveProfile(updates, 'schedule')
   }
 
-  const saveProfile = async (updates: Partial<UserProfile>) => {
-    setSaving(true)
-    setSaveMessage(null)
+  const saveProfile = async (updates: Partial<UserProfile>, section: 'tickers' | 'schedule') => {
+    if (section === 'tickers') {
+      setSavingTickers(true)
+      setTickerSaveMessage(null)
+    } else {
+      setSavingSchedule(true)
+      setScheduleSaveMessage(null)
+    }
 
     // Use upsert to handle both new and existing profiles
     const { error } = await supabase
@@ -77,14 +84,27 @@ export default function DashboardClient({ user, initialProfile, recentDigests }:
       })
 
     if (error) {
-      setSaveMessage('Failed to save changes')
+      if (section === 'tickers') {
+        setTickerSaveMessage('Failed to save')
+      } else {
+        setScheduleSaveMessage('Failed to save')
+      }
       console.error('Error saving profile:', error)
     } else {
-      setSaveMessage('Changes saved!')
-      setTimeout(() => setSaveMessage(null), 2000)
+      if (section === 'tickers') {
+        setTickerSaveMessage('Saved')
+        setTimeout(() => setTickerSaveMessage(null), 3000)
+      } else {
+        setScheduleSaveMessage('Saved')
+        setTimeout(() => setScheduleSaveMessage(null), 3000)
+      }
     }
 
-    setSaving(false)
+    if (section === 'tickers') {
+      setSavingTickers(false)
+    } else {
+      setSavingSchedule(false)
+    }
   }
 
   const handleSignOut = async () => {
@@ -189,26 +209,12 @@ export default function DashboardClient({ user, initialProfile, recentDigests }:
             <span className="text-xl font-bold text-white">Stock Summaries</span>
           </div>
 
-          <div className="flex items-center gap-4">
-            {saving && (
-              <span className="text-sm text-purple-400 flex items-center gap-2">
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                Saving...
-              </span>
-            )}
-            {saveMessage && !saving && (
-              <span className="text-sm text-green-400">{saveMessage}</span>
-            )}
-            <button
-              onClick={handleSignOut}
-              className="text-gray-400 hover:text-white transition-colors text-sm"
-            >
-              Sign out
-            </button>
-          </div>
+          <button
+            onClick={handleSignOut}
+            className="text-gray-400 hover:text-white transition-colors text-sm"
+          >
+            Sign out
+          </button>
         </div>
       </header>
 
@@ -284,6 +290,8 @@ export default function DashboardClient({ user, initialProfile, recentDigests }:
         <TickerManager
           tickers={currentProfile.tickers}
           onTickersChange={handleTickersChange}
+          saving={savingTickers}
+          saveMessage={tickerSaveMessage}
         />
 
         {/* Schedule Manager */}
@@ -293,6 +301,8 @@ export default function DashboardClient({ user, initialProfile, recentDigests }:
           days={currentProfile.schedule_days}
           timezone={currentProfile.timezone}
           onScheduleChange={handleScheduleChange}
+          saving={savingSchedule}
+          saveMessage={scheduleSaveMessage}
         />
 
         {/* Recent Digests */}
