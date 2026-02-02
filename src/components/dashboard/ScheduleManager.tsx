@@ -15,14 +15,15 @@ interface ScheduleManagerProps {
   }) => void
 }
 
+// Sunday-Saturday order (US standard)
 const DAYS: { value: DayOfWeek; label: string; short: string }[] = [
-  { value: 'monday', label: 'Monday', short: 'M' },
-  { value: 'tuesday', label: 'Tuesday', short: 'T' },
-  { value: 'wednesday', label: 'Wednesday', short: 'W' },
-  { value: 'thursday', label: 'Thursday', short: 'T' },
-  { value: 'friday', label: 'Friday', short: 'F' },
-  { value: 'saturday', label: 'Saturday', short: 'S' },
-  { value: 'sunday', label: 'Sunday', short: 'S' },
+  { value: 'sunday', label: 'Sunday', short: 'Su' },
+  { value: 'monday', label: 'Monday', short: 'Mo' },
+  { value: 'tuesday', label: 'Tuesday', short: 'Tu' },
+  { value: 'wednesday', label: 'Wednesday', short: 'We' },
+  { value: 'thursday', label: 'Thursday', short: 'Th' },
+  { value: 'friday', label: 'Friday', short: 'Fr' },
+  { value: 'saturday', label: 'Saturday', short: 'Sa' },
 ]
 
 const TIME_OPTIONS = Array.from({ length: 24 }, (_, i) => {
@@ -58,22 +59,41 @@ export default function ScheduleManager({
 }: ScheduleManagerProps) {
   const handleFrequencyChange = (newFrequency: ScheduleFrequency) => {
     let newDays = days
+
     if (newFrequency === 'daily') {
-      newDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+      // All 7 days
+      newDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
     } else if (newFrequency === 'weekly') {
-      newDays = ['monday']
+      // Single day - keep first selected day or default to Sunday
+      newDays = days.length > 0 ? [days[0]] : ['sunday']
+    } else if (newFrequency === 'custom') {
+      // Need at least 2 days for custom
+      if (days.length < 2) {
+        // If coming from weekly with 1 day, add Monday (or next day)
+        const currentDay = days[0] || 'sunday'
+        const currentIndex = DAYS.findIndex(d => d.value === currentDay)
+        const nextIndex = (currentIndex + 1) % 7
+        newDays = [currentDay, DAYS[nextIndex].value]
+      }
     }
+
     onScheduleChange({ schedule_frequency: newFrequency, schedule_days: newDays })
   }
 
   const handleDayToggle = (day: DayOfWeek) => {
-    const newDays = days.includes(day)
-      ? days.filter((d) => d !== day)
-      : [...days, day]
+    if (frequency === 'weekly') {
+      // Radio behavior - only one day can be selected
+      onScheduleChange({ schedule_days: [day] })
+    } else if (frequency === 'custom') {
+      // Checkbox behavior - toggle, but maintain minimum of 2 days
+      const newDays = days.includes(day)
+        ? days.filter((d) => d !== day)
+        : [...days, day]
 
-    // Ensure at least one day is selected
-    if (newDays.length === 0) return
-    onScheduleChange({ schedule_days: newDays })
+      // Ensure at least 2 days are selected for custom
+      if (newDays.length < 2) return
+      onScheduleChange({ schedule_days: newDays })
+    }
   }
 
   const handleTimeChange = (newTime: string) => {
@@ -82,6 +102,30 @@ export default function ScheduleManager({
 
   const handleTimezoneChange = (newTimezone: string) => {
     onScheduleChange({ timezone: newTimezone })
+  }
+
+  // Get preview text
+  const getPreviewText = () => {
+    if (frequency === 'daily') {
+      return 'Every day'
+    } else if (frequency === 'weekly') {
+      const dayLabel = DAYS.find((d) => d.value === days[0])?.label || 'week'
+      return `Every ${dayLabel}`
+    } else {
+      // Custom - show which days
+      const sortedDays = DAYS.filter(d => days.includes(d.value))
+      if (sortedDays.length === 5 &&
+          !days.includes('saturday') &&
+          !days.includes('sunday')) {
+        return 'Weekdays'
+      }
+      if (sortedDays.length === 2 &&
+          days.includes('saturday') &&
+          days.includes('sunday')) {
+        return 'Weekends'
+      }
+      return sortedDays.map(d => d.label).join(', ')
+    }
   }
 
   return (
@@ -113,10 +157,15 @@ export default function ScheduleManager({
             </button>
           ))}
         </div>
+        <p className="text-gray-500 text-xs mt-2">
+          {frequency === 'daily' && 'Receive updates every day'}
+          {frequency === 'weekly' && 'Pick one day per week'}
+          {frequency === 'custom' && 'Pick multiple days per week'}
+        </p>
       </div>
 
-      {/* Day Selection (for weekly/custom) */}
-      {(frequency === 'weekly' || frequency === 'custom') && (
+      {/* Day Selection (for weekly/custom only) */}
+      {frequency !== 'daily' && (
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-300 mb-3">
             {frequency === 'weekly' ? 'Day of Week' : 'Select Days'}
@@ -126,27 +175,17 @@ export default function ScheduleManager({
               <button
                 key={day.value}
                 onClick={() => handleDayToggle(day.value)}
-                className={`w-12 h-12 rounded-xl font-medium transition-all flex items-center justify-center ${
+                className={`w-12 h-12 rounded-xl font-medium transition-all flex items-center justify-center text-sm ${
                   days.includes(day.value)
                     ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
                     : 'bg-white/10 text-gray-400 hover:bg-white/20'
                 }`}
                 title={day.label}
               >
-                <span className="hidden sm:inline">{day.short}</span>
-                <span className="sm:hidden">{day.label.slice(0, 2)}</span>
+                {day.short}
               </button>
             ))}
           </div>
-          <p className="text-gray-500 text-sm mt-2">
-            {days.length === 0
-              ? 'Select at least one day'
-              : days.length === 7
-              ? 'Every day'
-              : days.length === 5 && !days.includes('saturday') && !days.includes('sunday')
-              ? 'Weekdays only'
-              : `${days.length} day${days.length > 1 ? 's' : ''} per week`}
-          </p>
         </div>
       )}
 
@@ -193,13 +232,7 @@ export default function ScheduleManager({
             </svg>
           </div>
           <div>
-            <p className="text-white font-medium">
-              {frequency === 'daily'
-                ? 'Every day'
-                : frequency === 'weekly'
-                ? `Every ${DAYS.find((d) => d.value === days[0])?.label || 'week'}`
-                : `${days.length} days per week`}
-            </p>
+            <p className="text-white font-medium">{getPreviewText()}</p>
             <p className="text-gray-400 text-sm">
               at {TIME_OPTIONS.find((t) => t.value === time)?.label || time} ({COMMON_TIMEZONES.find((t) => t.value === timezone)?.label || timezone})
             </p>
