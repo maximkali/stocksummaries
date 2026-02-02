@@ -10,6 +10,7 @@ export interface UserProfile {
   schedule_time: string // HH:MM format in UTC
   schedule_days: DayOfWeek[] // for weekly/custom
   timezone: string
+  emails_paused: boolean
   created_at: string
   updated_at: string
 }

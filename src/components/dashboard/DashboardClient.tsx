@@ -30,6 +30,7 @@ export default function DashboardClient({ user, initialProfile, recentDigests }:
     schedule_time: '08:00',
     schedule_days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    emails_paused: false,
   }
 
   const currentProfile = profile || { ...defaultProfile, id: user.id, email: user.email || '' } as UserProfile
@@ -61,6 +62,32 @@ export default function DashboardClient({ user, initialProfile, recentDigests }:
       return { ...defaultProfile, id: user.id, email: user.email || '', ...updates } as UserProfile
     })
     await saveProfile(updates, 'schedule')
+  }
+
+  const handleTogglePaused = async () => {
+    const newPausedState = !currentProfile.emails_paused
+    setProfile((prev) => {
+      if (prev) {
+        return { ...prev, emails_paused: newPausedState }
+      }
+      return { ...defaultProfile, id: user.id, email: user.email || '', emails_paused: newPausedState } as UserProfile
+    })
+
+    const { error } = await supabase
+      .from('profiles')
+      .upsert({
+        id: user.id,
+        email: user.email || '',
+        emails_paused: newPausedState,
+      }, {
+        onConflict: 'id'
+      })
+
+    if (error) {
+      // Revert on error
+      setProfile((prev) => prev ? { ...prev, emails_paused: !newPausedState } : prev)
+      console.error('Error toggling pause state:', error)
+    }
   }
 
   const saveProfile = async (updates: Partial<UserProfile>, section: 'tickers' | 'schedule') => {
@@ -235,7 +262,12 @@ export default function DashboardClient({ user, initialProfile, recentDigests }:
                 </svg>
               </div>
               <div>
-                {nextEmail && currentProfile.tickers.length > 0 ? (
+                {currentProfile.emails_paused ? (
+                  <>
+                    <p className="text-yellow-400 text-sm">Emails paused</p>
+                    <p className="text-white text-lg font-semibold">No digests will be sent</p>
+                  </>
+                ) : nextEmail && currentProfile.tickers.length > 0 ? (
                   <>
                     <p className="text-gray-400 text-sm">Next scheduled digest</p>
                     <p className="text-white text-lg font-semibold">
@@ -279,6 +311,28 @@ export default function DashboardClient({ user, initialProfile, recentDigests }:
                 </span>
               )}
             </div>
+          </div>
+          
+          {/* Email Toggle */}
+          <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
+            <div>
+              <p className="text-white font-medium">Scheduled emails</p>
+              <p className="text-gray-400 text-sm">
+                {currentProfile.emails_paused ? 'Paused – no digests will be sent' : 'Active – digests will be sent on schedule'}
+              </p>
+            </div>
+            <button
+              onClick={handleTogglePaused}
+              className={`relative w-14 h-8 rounded-full transition-colors ${
+                currentProfile.emails_paused ? 'bg-gray-600' : 'bg-green-500'
+              }`}
+            >
+              <span
+                className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-transform ${
+                  currentProfile.emails_paused ? 'left-1' : 'left-7'
+                }`}
+              />
+            </button>
           </div>
         </section>
 

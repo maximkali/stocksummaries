@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
 
     const supabaseAdmin = getSupabaseAdmin()
 
-    // Find users who should receive emails now
+    // Find users who should receive emails now (excluding paused users)
     const { data: eligibleUsers, error: queryError } = await supabaseAdmin
       .from('profiles')
       .select('*')
@@ -89,6 +89,7 @@ export async function GET(request: NextRequest) {
       .gte('schedule_time', `${currentHour}:00`)
       .lt('schedule_time', `${currentHour}:59`)
       .not('tickers', 'eq', '{}')
+      .or('emails_paused.is.null,emails_paused.eq.false')
 
     if (queryError) {
       console.error('Error querying users:', queryError)

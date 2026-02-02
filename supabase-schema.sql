@@ -13,6 +13,7 @@ create table public.profiles (
   schedule_time time default '08:00',
   schedule_days text[] default '{"monday", "tuesday", "wednesday", "thursday", "friday"}',
   timezone text default 'America/New_York',
+  emails_paused boolean default false,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   updated_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
