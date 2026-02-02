@@ -61,8 +61,8 @@ export default function ScheduleManager({
     let newDays = days
 
     if (newFrequency === 'daily') {
-      // All 7 days
-      newDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+      // Weekdays only (Monday-Friday)
+      newDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
     } else if (newFrequency === 'weekly') {
       // Single day - keep first selected day or default to Sunday
       newDays = days.length > 0 ? [days[0]] : ['sunday']
@@ -107,7 +107,7 @@ export default function ScheduleManager({
   // Get preview text
   const getPreviewText = () => {
     if (frequency === 'daily') {
-      return 'Every day'
+      return 'Every weekday'
     } else if (frequency === 'weekly') {
       const dayLabel = DAYS.find((d) => d.value === days[0])?.label || 'week'
       return `Every ${dayLabel}`
@@ -158,7 +158,7 @@ export default function ScheduleManager({
           ))}
         </div>
         <p className="text-gray-500 text-xs mt-2">
-          {frequency === 'daily' && 'Receive updates every day'}
+          {frequency === 'daily' && 'Receive updates Monday through Friday'}
           {frequency === 'weekly' && 'Pick one day per week'}
           {frequency === 'custom' && 'Pick multiple days per week'}
         </p>
