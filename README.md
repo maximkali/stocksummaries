@@ -1,4 +1,4 @@
-# Stock Summaries
+# Stock Summaries 📈
 
 AI-powered stock digests delivered to your inbox. No fluff, no speculation—just the facts that move markets, personalized to your watchlist.
 
