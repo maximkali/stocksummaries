@@ -221,8 +221,8 @@ export default function DashboardClient({ user, initialProfile, recentDigests }:
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
         {/* Account Section */}
         <section className="text-center mb-12">
-          <p className="text-gray-400 text-sm mb-1">Signed in as</p>
-          <p className="text-white text-lg font-medium">{user.email}</p>
+          <p className="text-gray-400 mb-2">Signed in as</p>
+          <p className="text-white text-xl font-medium">{user.email}</p>
         </section>
 
         {/* Send Digest Now Card */}
