@@ -345,15 +345,24 @@ export default function DashboardClient({ user, initialProfile, recentDigests }:
         />
 
         {/* Schedule Manager */}
-        <ScheduleManager
-          frequency={currentProfile.schedule_frequency}
-          time={currentProfile.schedule_time?.slice(0, 5) || '08:00'}
-          days={currentProfile.schedule_days || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']}
-          timezone={currentProfile.timezone || 'America/New_York'}
-          onScheduleChange={handleScheduleChange}
-          saving={savingSchedule}
-          saveMessage={scheduleSaveMessage}
-        />
+        <div className={`relative ${currentProfile.emails_paused ? 'pointer-events-none' : ''}`}>
+          {currentProfile.emails_paused && (
+            <div className="absolute inset-0 bg-black/60 rounded-2xl z-10 flex items-center justify-center">
+              <p className="text-gray-300 font-medium">Emails paused</p>
+            </div>
+          )}
+          <div className={currentProfile.emails_paused ? 'opacity-40' : ''}>
+            <ScheduleManager
+              frequency={currentProfile.schedule_frequency}
+              time={currentProfile.schedule_time?.slice(0, 5) || '08:00'}
+              days={currentProfile.schedule_days || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']}
+              timezone={currentProfile.timezone || 'America/New_York'}
+              onScheduleChange={handleScheduleChange}
+              saving={savingSchedule}
+              saveMessage={scheduleSaveMessage}
+            />
+          </div>
+        </div>
 
         {/* Recent Digests */}
         <RecentDigests digests={recentDigests} />
