@@ -78,22 +78,38 @@ Be direct. Be useful. Skip anything that doesn't matter.`
 
   const grok = getGrokClient()
   console.log('Calling Grok API for ticker:', ticker)
-  console.log('Model: grok-4-1-fast-reasoning')
+  console.log('Model: grok-4-fast-reasoning')
   
-  const response = await grok.chat.completions.create({
-    model: 'grok-4-1-fast-reasoning',
-    messages: [
-      {
-        role: 'system',
-        content: 'You are a financial research assistant that provides concise, factual stock analysis. Always respond with valid JSON only, no markdown code blocks.',
-      },
-      {
-        role: 'user',
-        content: prompt,
-      },
-    ],
-    temperature: 0.3,
-  })
+  let response
+  try {
+    response = await grok.chat.completions.create({
+      model: 'grok-4-fast-reasoning',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a financial research assistant that provides concise, factual stock analysis. Always respond with valid JSON only, no markdown code blocks.',
+        },
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+      temperature: 0.3,
+    })
+  } catch (error) {
+    console.error('=== GROK API ERROR ===')
+    console.error('Error type:', error instanceof Error ? error.constructor.name : typeof error)
+    console.error('Error message:', error instanceof Error ? error.message : String(error))
+    if (error && typeof error === 'object' && 'status' in error) {
+      console.error('HTTP Status:', (error as { status: number }).status)
+    }
+    if (error && typeof error === 'object' && 'response' in error) {
+      const resp = (error as { response?: { data?: unknown } }).response
+      console.error('Response data:', JSON.stringify(resp?.data, null, 2))
+    }
+    console.error('======================')
+    throw error
+  }
 
   const content = response.choices[0]?.message?.content || '{}'
 
