@@ -2,8 +2,16 @@ import OpenAI from 'openai'
 import { getServerEnv } from '@/lib/env'
 
 function getGrokClient(): OpenAI {
+  const apiKey = getServerEnv('GROK_API_KEY')
+  // Debug: show masked API key
+  console.log('=== GROK API DEBUG ===')
+  console.log('API Key (masked):', apiKey.slice(0, 8) + '***' + apiKey.slice(-4))
+  console.log('API Key length:', apiKey.length)
+  console.log('Base URL: https://api.x.ai/v1')
+  console.log('======================')
+  
   return new OpenAI({
-    apiKey: getServerEnv('GROK_API_KEY'),
+    apiKey,
     baseURL: 'https://api.x.ai/v1',
   })
 }
@@ -69,6 +77,9 @@ Format your response as JSON with this structure:
 Be direct. Be useful. Skip anything that doesn't matter.`
 
   const grok = getGrokClient()
+  console.log('Calling Grok API for ticker:', ticker)
+  console.log('Model: grok-4-1-fast-reasoning')
+  
   const response = await grok.chat.completions.create({
     model: 'grok-4-1-fast-reasoning',
     messages: [
