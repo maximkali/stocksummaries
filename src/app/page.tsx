@@ -43,7 +43,7 @@ export default function LandingPage() {
 
           {/* Subheadline */}
           <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-            AI-powered stock digests delivered to your inbox. No fluff, no speculation—just the facts that move markets, personalized to your watchlist.
+            AI-powered stock digests delivered to your inbox. No fluff, no speculation – just the facts that move markets, personalized to your watchlist.
           </p>
 
           {/* CTA Buttons */}
@@ -153,7 +153,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">Build Your Watchlist</h3>
                 <p className="text-gray-400">
-                  Add the stock tickers you care about most. Drag to prioritize—your top picks come first in every digest.
+                  Add the stock tickers you care about most. Drag to prioritize – your top picks come first in every digest.
                 </p>
               </div>
             </div>
