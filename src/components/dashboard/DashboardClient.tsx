@@ -284,7 +284,7 @@ export default function DashboardClient({ user, initialProfile, recentDigests }:
 
         {/* Ticker Manager */}
         <TickerManager
-          tickers={currentProfile.tickers}
+          tickers={currentProfile.tickers || []}
           onTickersChange={handleTickersChange}
           saving={savingTickers}
           saveMessage={tickerSaveMessage}
@@ -293,9 +293,9 @@ export default function DashboardClient({ user, initialProfile, recentDigests }:
         {/* Schedule Manager */}
         <ScheduleManager
           frequency={currentProfile.schedule_frequency}
-          time={currentProfile.schedule_time}
-          days={currentProfile.schedule_days}
-          timezone={currentProfile.timezone}
+          time={currentProfile.schedule_time?.slice(0, 5) || '08:00'}
+          days={currentProfile.schedule_days || ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']}
+          timezone={currentProfile.timezone || 'America/New_York'}
           onScheduleChange={handleScheduleChange}
           saving={savingSchedule}
           saveMessage={scheduleSaveMessage}
